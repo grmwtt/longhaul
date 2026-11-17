@@ -13,7 +13,7 @@ A project's state is one set of markdown sections: BRIEF, STATE, LOG, DECISIONS,
 
 1. **Files**: a readable `project-state/STATE.md` in the current repo or working folder (Claude Code, Cowork), or in a folder connected from the user's computer (Claude app with the desktop app linked). Read and write the files directly. A chat conversation's own temporary workspace does not count: nothing there survives the conversation.
 2. **Pointer**: a line `longhaul state: <location>` in the project instructions, the conversation, or CLAUDE.md. If the location is a folder path on the user's computer and that folder isn't connected yet, request access to exactly that folder (one prompt), then use it as Files. If it's a link, it's a Claude Doc with one tab per section, in this order: State, Brief, Log, Decisions, Questions, Sources. Use the Claude Docs tools and follow their guide before the first call. If the link is a Google Drive folder instead, it holds one `.md` file per section; use the Google Drive tools. If the needed tools aren't available in this app, say so plainly and stop rather than guessing at the state.
-3. **Neither**: if the user is in the Claude app and their computer is linked, the state may be in a folder that isn't connected yet; ask once whether to request access to it. Otherwise the project isn't set up: suggest `/longhaul:init`.
+3. **Neither**: if the user is in the Claude app and their computer is linked, the state may be in a folder that isn't connected yet; ask once whether to request access to it. Otherwise the project isn't set up.
 
 Never create a second copy of the state somewhere else. In a doc, keep each tab's markdown in the same shape as the matching file, so a project can move between files and a doc without reformatting.
 

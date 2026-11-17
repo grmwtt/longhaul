@@ -24,7 +24,7 @@ dir="$start_dir"
 root=""
 while [ -n "$dir" ] && [ "$dir" != "/" ]; do
   if [ -f "$dir/$STATE_DIR_NAME/STATE.md" ]; then root="$dir"; break; fi
-  dir="$(dirname "$dir")"
+  parent="$(dirname "$dir")"; [ "$parent" = "$dir" ] && break; dir="$parent"
 done
 if [ -z "$root" ]; then
   # No local files. A project whose state lives in a Claude Doc or Drive folder leaves a
@@ -39,7 +39,7 @@ if [ -z "$root" ]; then
         exit 0
       fi
     fi
-    dir="$(dirname "$dir")"
+    parent="$(dirname "$dir")"; [ "$parent" = "$dir" ] && break; dir="$parent"
   done
   exit 0
 fi
@@ -59,8 +59,19 @@ if [ -n "$last_cp" ]; then
 fi
 
 commits_since=""
-if [ -n "$last_cp" ] && git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  commits_since="$(git -C "$root" log --since="$last_cp 23:59:59" --oneline 2>/dev/null | wc -l | tr -d ' ')"
+if git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  # Anchor on the last commit that touched STATE.md and count later commits that changed
+  # anything outside the state folder. Only valid when STATE.md is committed and clean.
+  anchor=""
+  if [ -z "$(git -C "$root" status --porcelain -- "$STATE_DIR_NAME/STATE.md" 2>/dev/null)" ]; then
+    anchor="$(git -C "$root" log -1 --format=%H -- "$STATE_DIR_NAME/STATE.md" 2>/dev/null)"
+  fi
+  if [ -n "$anchor" ]; then
+    commits_since="$(git -C "$root" rev-list --count "$anchor..HEAD" -- . ":(exclude)$STATE_DIR_NAME" 2>/dev/null)"
+  elif [ -n "$last_cp" ]; then
+    # STATE.md is untracked or has uncommitted edits: fall back to the checkpoint date.
+    commits_since="$(git -C "$root" log --since="$last_cp 23:59:59" --oneline 2>/dev/null | wc -l | tr -d ' ')"
+  fi
 fi
 
 case "$source_kind" in

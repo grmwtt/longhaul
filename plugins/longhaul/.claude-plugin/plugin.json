@@ -1,6 +1,6 @@
 {
   "name": "longhaul",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scaffold and maintain persistent state (brief, state, log, decisions, questions) for long-running projects and research, and auto-load it into every session.",
   "author": {
     "name": "grmwtt"

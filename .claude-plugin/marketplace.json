@@ -1,6 +1,6 @@
 {
   "name": "longhaul",
-  "description": "Persistent project state for long-running Claude Code projects and research",
+  "description": "Persistent project state for long-running projects and research, in Claude Code and the Claude app",
   "owner": {
     "name": "grmwtt"
   },

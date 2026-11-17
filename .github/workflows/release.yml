@@ -1,0 +1,41 @@
+name: release
+# Builds longhaul-plugin.zip and attaches it to the GitHub release for a version tag.
+# The README's zip install link points at the latest release's copy, so every release needs it.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to (re)build the zip for, e.g. v0.1.2
+        required: true
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
+      - name: Tag must match the plugin version
+        run: |
+          v="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' plugins/longhaul/.claude-plugin/plugin.json)"
+          if [ "v$v" != "$TAG" ]; then
+            echo "Tag $TAG does not match plugin.json version $v" >&2
+            exit 1
+          fi
+      - name: Run repo checks
+        run: bash scripts/check.sh
+      - name: Build zip
+        run: bash scripts/build-zip.sh
+      - name: Attach zip to the release
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/longhaul-plugin.zip --clobber
+          else
+            gh release create "$TAG" dist/longhaul-plugin.zip --verify-tag --title "longhaul ${TAG#v}" --generate-notes
+          fi

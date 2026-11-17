@@ -3,7 +3,8 @@
 # - shell syntax (and shellcheck, if installed) for every script
 # - the "Find this project's state" block is identical in all four skills
 # - session-start hook behaviour in a throwaway git repo
-# - `claude plugin validate` for the marketplace and the plugin, if the CLI is installed
+# - the directory edition is up to date and holds only files the plugin directory accepts
+# - `claude plugin validate` for the marketplace and both editions, if the CLI is installed
 set -u
 cd "$(dirname "$0")/.." || exit 1
 NAME="longhaul"
@@ -74,10 +75,30 @@ expect "backslash path does not hang" silent 'C:\Users\x\proj' "$tmp/empty"
 expect "relative path does not hang" silent 'some/rel/dir' "$tmp/empty"
 if hook "$tmp/proj" | grep -q '^## .*Project initialized'; then ok "hook: latest log entry injected"; else bad "hook: latest log entry injected"; fi
 
+# --- directory edition (hook-free copy submitted to the plugin directory) ---
+DIR_ED="directory/$NAME"
+if bash scripts/build-directory-edition.sh "$tmp/dir-edition" >/dev/null 2>&1 && diff -r "$tmp/dir-edition" "$DIR_ED" >/dev/null 2>&1; then
+  ok "directory edition: up to date"
+else
+  bad "directory edition: out of date (run scripts/build-directory-edition.sh and commit)"
+fi
+if [ -e "$DIR_ED/hooks" ] || [ -e "$DIR_ED/scripts" ]; then bad "directory edition: contains hooks/ or scripts/"; else ok "directory edition: no hooks or scripts"; fi
+extra="$(find "$DIR_ED" -type f ! -name '*.md' ! -name '*.json' ! -name '*.png' 2>/dev/null)"
+shebang=""
+while IFS= read -r f; do
+  if [ "$(head -c 2 "$f" 2>/dev/null)" = "#!" ]; then shebang="$shebang $f"; fi
+done < <(find "$DIR_ED" -type f ! -name '*.png' 2>/dev/null)
+if [ -z "$extra" ] && [ -z "$shebang" ]; then
+  ok "directory edition: only Markdown, JSON and PNG files, none starting with #!"
+else
+  bad "directory edition: disallowed files:$shebang $extra"
+fi
+
 # --- manifests ---
 if command -v claude >/dev/null 2>&1; then
   if claude plugin validate . >/dev/null 2>&1; then ok "claude plugin validate ."; else bad "claude plugin validate ."; fi
   if claude plugin validate "./$PLUGIN" >/dev/null 2>&1; then ok "claude plugin validate ./$PLUGIN"; else bad "claude plugin validate ./$PLUGIN"; fi
+  if claude plugin validate --profile directory --strict "./$DIR_ED" >/dev/null 2>&1; then ok "claude plugin validate --profile directory --strict ./$DIR_ED"; else bad "claude plugin validate --profile directory --strict ./$DIR_ED"; fi
 else
   echo "skip  claude plugin validate (CLI not installed)"
 fi

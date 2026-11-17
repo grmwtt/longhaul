@@ -5,7 +5,7 @@ description: Re-orient on a long-running longhaul project after time away. Reads
 
 # Resume
 
-At session start, Claude Code's hook (or the Project instructions in the Claude app) loads only STATE and the latest log entry. This skill goes deeper and checks that state against reality.
+At session start, only STATE and the latest log entry get loaded (by the session-start hook where this edition of the plugin has one, otherwise through the project's CLAUDE.md section or the Project instructions in the Claude app). This skill goes deeper and checks that state against reality.
 
 ## Find this project's state
 

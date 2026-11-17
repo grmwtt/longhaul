@@ -51,3 +51,16 @@ Findings:
 - **`init` needs read access to the plugin's install folder.** Without it (first headless attempt), `init` could not read `templates/` and wrote the files from memory of the skill text. The hook-facing formats were still correct, but headings and wording differed from the templates. The README's troubleshooting section now covers this.
 
 Not covered by this run: the Claude Doc and Google Drive state locations, the Claude app (Project instructions snippet, zip upload), Cowork, moving state between locations with `review`, applying `review` proposals, and the interactive interview in `init`.
+
+## Directory edition run: 2026-11-17, plugin 0.1.5, Claude Code 2.1.326
+
+The directory edition (`directory/longhaul`, no hook) was tested the same way in a second throwaway repo. To keep the installed full edition's hook out of it, the test project had `.claude/settings.json` with `{"enabledPlugins": {"longhaul@longhaul": false}}`, and each session was started with `--plugin-dir <repo>/directory/longhaul` (plus `--add-dir` for the same folder so `init` could read its templates).
+
+| Step | Result |
+|---|---|
+| No hook | Passed. A session with tools disabled reported no `[longhaul]` block in its context. |
+| init | Passed. Created the five sections and the `CLAUDE.md` section from the templates. |
+| Loading without the hook | Passed. Asked only "What should we work on next?", a fresh session read STATE, BRIEF, QUESTIONS and LOG on its own, ran `git log --oneline -5`, and reported the one commit made after the last checkpoint. |
+| Compaction | Passed. After `/compact`, the session answered a question about next action 2 correctly from context without re-reading the file. |
+
+Not covered: `checkpoint`, `resume` and `review` were not re-run for this edition, since the skill files are identical to the full edition's. One run of each step is not a measure of how reliably sessions follow the `CLAUDE.md` section.

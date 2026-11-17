@@ -6,6 +6,7 @@ On a long project, Claude starts every session cold, and you end up re-explainin
 
 ## Contents
 
+- [Editions](#editions)
 - [Requirements](#requirements)
 - [Install](#install)
 - [Quick start](#quick-start)
@@ -19,6 +20,17 @@ On a long project, Claude starts every session cold, and you end up re-explainin
 - [Design notes](#design-notes)
 - [Customize](#customize)
 - [Development](#development)
+
+## Editions
+
+There are two editions with the same four commands. Install one, not both.
+
+| Edition | Where | What's in it |
+|---|---|---|
+| Full | This repo's marketplace (the install options below) | Skills plus a session-start hook for Claude Code and Cowork |
+| Directory | Anthropic's plugin directory | Skills only: no hooks, no scripts |
+
+The plugin directory accepts hooks and scripts only from Verified organizations, so the directory edition leaves them out. Without the hook, a session loads the state by following the section `init` adds to the project's `CLAUDE.md`, which costs a couple of file reads at the start of a session. The hook puts the state in directly, does so again after compaction, and warns when git has commits newer than the last checkpoint. The rest of this README describes the full edition.
 
 ## Requirements
 
@@ -170,7 +182,7 @@ The sections:
 
 - **Claude Code and Cowork**: a `SessionStart` hook injects STATE and the latest log entry at startup, on resume, after `/clear`, and after compaction. It warns when git has commits newer than the last committed checkpoint. It does nothing in projects that aren't set up.
 - **Claude app chats**: the Project-instructions snippet above tells each chat to load the state first.
-- **Sessions without the plugin**: the section `init` adds to `CLAUDE.md` tells Claude to read `project-state/STATE.md` and the latest log entry itself, so collaborators who haven't installed the plugin still get the state.
+- **Sessions without the hook**: the section `init` adds to `CLAUDE.md` tells Claude to read `project-state/STATE.md` and the latest log entry itself when the hook hasn't already loaded them. This is how the directory edition loads the state, and it means collaborators who haven't installed the plugin still get it.
 
 ## Update
 
@@ -221,7 +233,8 @@ Fork this repo and edit:
 
 ## Development
 
-- `bash scripts/check.sh` runs everything: shell syntax (plus `shellcheck` if installed), a check that the "Find this project's state" block is identical in all four skills, hook tests in a throwaway git repo, and `claude plugin validate` for the marketplace and the plugin. CI runs the same script on every push and pull request.
+- `bash scripts/check.sh` runs everything: shell syntax (plus `shellcheck` if installed), a check that the "Find this project's state" block is identical in all four skills, hook tests in a throwaway git repo, checks on the directory edition, and `claude plugin validate` for the marketplace and both editions. CI runs the same script on every push and pull request.
+- `directory/longhaul/` is the directory edition, generated from `plugins/longhaul/` by `bash scripts/build-directory-edition.sh` (its README comes from `scripts/directory-edition/README.md`). Never edit it by hand. Re-run the script after any change to the plugin and commit the result; `scripts/check.sh` fails if it is out of date. Skill and template text has to stay true with or without the hook.
 - `scripts/check.sh` does not run the skills. [docs/manual-test.md](docs/manual-test.md) has the procedure for testing them end to end in real sessions, and the result of the last run.
 - `bash scripts/build-zip.sh` builds `dist/longhaul-plugin.zip` for Upload plugin. `dist/` is not committed.
 - To release: bump `version` in `plugin.json`, commit, then push a matching tag (`git tag v0.1.3 && git push origin v0.1.3`). The `release` workflow runs the checks, builds the zip, and attaches it to the GitHub release for that tag, creating the release if needed. The install instructions link to the latest release's zip, so every version should be released this way.

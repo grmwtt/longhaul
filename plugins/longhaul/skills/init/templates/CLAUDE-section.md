@@ -1,7 +1,7 @@
 <!-- longhaul:start -->
 ## Long-running project protocol
 
-This project keeps durable state in `project-state/`. The longhaul plugin injects STATE.md and the latest log entry at session start and after compaction. If that state is not already in your context (the plugin is not installed, or this surface does not run hooks), read `project-state/STATE.md` and the last entry in `project-state/LOG.md` before doing anything else.
+This project keeps durable state in `project-state/`. At the start of every session, and again after compaction, `STATE.md` and the latest entry in `LOG.md` must be in your context. Where the longhaul plugin's session-start hook is running, it has already put them there in a block that starts with `[longhaul]`. If you don't see that block, read `project-state/STATE.md` and the last `## ` entry in `project-state/LOG.md` before doing anything else, and in a git repo run `git log --oneline -5`: commits newer than the last one that touched `project-state/STATE.md` mean the state may be stale.
 
 - `BRIEF.md`: goal, success criteria, non-goals, constraints. Do not change without a DECISIONS.md entry.
 - `STATE.md`: where things stand and the next actions. Short, overwritten each checkpoint.

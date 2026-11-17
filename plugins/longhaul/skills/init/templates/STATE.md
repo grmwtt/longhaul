@@ -1,6 +1,6 @@
 # Current State
 
-> Overwritten at every checkpoint. Keep under ~60 lines: this file is injected into every session.
+> Overwritten at every checkpoint. Keep under ~60 lines: this file is loaded into every session.
 
 Last checkpoint: {{DATE}}
 Phase: Setup

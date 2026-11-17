@@ -200,6 +200,7 @@ Your state files and docs stay where they are.
 
 - **The `/longhaul:` commands don't appear.** Start a new session after installing, and check `claude plugin details longhaul`.
 - **Nothing is loaded at session start.** The hook is silent unless it finds `project-state/STATE.md` in the current folder or a parent folder. Run `/longhaul:init` if the project isn't set up. The hook also needs `bash` on your PATH.
+- **`init` says it couldn't read its templates.** The templates live in the plugin's install folder, outside your project. Allow Claude to read that folder when it asks. In headless runs (`claude -p`), pass `--add-dir ~/.claude/plugins/cache/longhaul`.
 - **A warning says commits aren't reflected in STATE.md.** Work was committed after the last checkpoint. Run `/longhaul:checkpoint`, then commit `project-state/`.
 - **A Claude app chat doesn't know the project.** Make sure the chat is inside the Project whose instructions contain the snippet.
 
@@ -221,6 +222,7 @@ Fork this repo and edit:
 ## Development
 
 - `bash scripts/check.sh` runs everything: shell syntax (plus `shellcheck` if installed), a check that the "Find this project's state" block is identical in all four skills, hook tests in a throwaway git repo, and `claude plugin validate` for the marketplace and the plugin. CI runs the same script on every push and pull request.
+- `scripts/check.sh` does not run the skills. [docs/manual-test.md](docs/manual-test.md) has the procedure for testing them end to end in real sessions, and the result of the last run.
 - `bash scripts/build-zip.sh` builds `dist/longhaul-plugin.zip` for Upload plugin. `dist/` is not committed.
 - To release: bump `version` in `plugin.json`, commit, then push a matching tag (`git tag v0.1.3 && git push origin v0.1.3`). The `release` workflow runs the checks, builds the zip, and attaches it to the GitHub release for that tag, creating the release if needed. The install instructions link to the latest release's zip, so every version should be released this way.
 - Bump `version` in `plugins/longhaul/.claude-plugin/plugin.json` with every change you want installed copies to receive.

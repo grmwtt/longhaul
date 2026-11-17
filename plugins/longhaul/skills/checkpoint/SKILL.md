@@ -38,7 +38,7 @@ If no state is found, say so and suggest `/longhaul:init`. Don't create state he
 - Files: main files touched (omit for chat-only work)
 ```
 
-If a checkpoint already happened today, add to that entry instead of making a new one.
+Every checkpoint gets its own entry with its own title, even when there is already one from today. The session-start hook shows the last `## ` entry, so its title has to describe the latest work.
 
 **DECISIONS**: add a `D-NNN` entry for each decision that would be expensive to re-litigate. If it replaces an older one, mark the old one `superseded by D-NNN`. Skip trivial choices.
 

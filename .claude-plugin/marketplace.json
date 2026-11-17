@@ -1,0 +1,14 @@
+{
+  "name": "longhaul",
+  "description": "Persistent project state for long-running Claude Code projects and research",
+  "owner": {
+    "name": "grmwtt"
+  },
+  "plugins": [
+    {
+      "name": "longhaul",
+      "source": "./plugins/longhaul",
+      "description": "Scaffold and maintain persistent state (brief, state, log, decisions, questions) so every session resumes where the last one left off"
+    }
+  ]
+}

@@ -61,17 +61,15 @@ Plugins installed this way are tied to your account and also appear in Claude Co
 
 ### Option C: Upload a zip to the Claude app
 
-Use this to test without going through GitHub.
+Use this to install without adding the marketplace.
 
-1. Clone this repo and build the zip:
+1. Download `longhaul-plugin.zip` from the [latest release](https://github.com/grmwtt/longhaul/releases/latest):
 
-   ```bash
-   git clone https://github.com/grmwtt/longhaul.git
-   cd longhaul
-   bash scripts/build-zip.sh
-   ```
+   https://github.com/grmwtt/longhaul/releases/latest/download/longhaul-plugin.zip
 
-2. In the Claude app, open **Customize > Plugins > Add > Upload plugin** and choose `dist/longhaul-plugin.zip`.
+2. In the Claude app, open **Customize > Plugins > Add > Upload plugin** and choose the downloaded zip.
+
+To build the zip yourself instead, clone this repo and run `bash scripts/build-zip.sh`; it writes `dist/longhaul-plugin.zip`.
 
 ### Option D: Try it from a clone without installing
 
@@ -223,7 +221,7 @@ Fork this repo and edit:
 ## Development
 
 - `bash scripts/check.sh` runs everything: shell syntax (plus `shellcheck` if installed), a check that the "Find this project's state" block is identical in all four skills, hook tests in a throwaway git repo, and `claude plugin validate` for the marketplace and the plugin. CI runs the same script on every push and pull request.
-- `bash scripts/build-zip.sh` builds `dist/longhaul-plugin.zip` for Upload plugin. `dist/` is not committed.
+- `bash scripts/build-zip.sh` builds `dist/longhaul-plugin.zip` for Upload plugin. `dist/` is not committed. Attach the zip to each GitHub release under that same file name (`gh release create vX.Y.Z dist/longhaul-plugin.zip`), since the install instructions link to the latest release's copy.
 - Bump `version` in `plugins/longhaul/.claude-plugin/plugin.json` with every change you want installed copies to receive.
 - The "Find this project's state" block is repeated in each `SKILL.md` because skills can't share includes. Edit all four copies together.
 

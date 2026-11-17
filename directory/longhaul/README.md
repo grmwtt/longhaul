@@ -19,7 +19,15 @@ Persistent project state for projects and research that run for weeks or months 
 
 ## Where the state lives
 
-`init` picks one place per project: a `project-state/` folder in your repo when there is a working folder, or a Claude Doc with one tab per section for chat-only projects.
+`init` picks one place per project:
+
+- a `project-state/` folder in your repo, when there is a working folder
+- a Claude Doc with one tab per section, for chat-only projects
+- a Google Drive folder with one `.md` file per section, as a fallback when Claude Docs isn't available
+
+## Data handling
+
+The plugin has no service of its own and sends nothing to its author. The skills read and write the project state only in the location above. A Claude Doc or a Google Drive folder is reached through connectors already set up in your Claude account; the plugin declares none of its own. The state holds whatever you and Claude record about the project, which can include the names of people involved, such as stakeholders or who to check with.
 
 ## How the state gets loaded
 

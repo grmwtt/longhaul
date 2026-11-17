@@ -241,6 +241,10 @@ Fork this repo and edit:
 - Bump `version` in `plugins/longhaul/.claude-plugin/plugin.json` with every change you want installed copies to receive.
 - The "Find this project's state" block is repeated in each `SKILL.md` because skills can't share includes. Edit all four copies together.
 
+## Privacy
+
+The plugin has no service of its own and sends nothing to its author. See [PRIVACY.md](PRIVACY.md).
+
 ## License
 
 MIT

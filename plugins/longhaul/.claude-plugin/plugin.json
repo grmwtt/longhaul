@@ -1,6 +1,6 @@
 {
   "name": "longhaul",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Scaffold and maintain persistent state (brief, state, log, decisions, questions) for long-running projects and research, so every session resumes where the last one left off.",
   "author": {
     "name": "grmwtt"
@@ -8,6 +8,7 @@
   "repository": "https://github.com/grmwtt/longhaul",
   "homepage": "https://github.com/grmwtt/longhaul",
   "supportUrl": "https://github.com/grmwtt/longhaul/issues",
+  "privacyPolicyUrl": "https://github.com/grmwtt/longhaul/blob/main/PRIVACY.md",
   "license": "MIT",
   "keywords": ["project-management", "research", "memory", "long-running", "state"]
 }

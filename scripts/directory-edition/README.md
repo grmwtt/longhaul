@@ -29,6 +29,8 @@ Persistent project state for projects and research that run for weeks or months 
 
 The plugin has no service of its own and sends nothing to its author. The skills read and write the project state only in the location above. A Claude Doc or a Google Drive folder is reached through connectors already set up in your Claude account; the plugin declares none of its own. The state holds whatever you and Claude record about the project, which can include the names of people involved, such as stakeholders or who to check with.
 
+Privacy: https://github.com/grmwtt/longhaul/blob/main/PRIVACY.md
+
 ## How the state gets loaded
 
 This edition contains skills only. It has no hooks and runs no scripts.
